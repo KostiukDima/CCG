@@ -43,14 +43,50 @@ public class GameManagerSrp : MonoBehaviour
     public Transform EnemyHand;
     public Transform PlayerHand;
     public GameObject cardPrefab;
+    int Turn, TurnTime = 30;
+    public Text TurnTimeTxt;
+    public Button EndTurnBtn;
 
+    public bool IsPlayerTurn
+    {
+        get { return Turn % 2 == 0; }
+    }
 
     void Start()
     {
+        Turn = 0;
+
         CurrentGame = new Game();
 
         GiveHandCards(CurrentGame.PlayerDeck, PlayerHand);
         GiveHandCards(CurrentGame.EnemyDeck, EnemyHand);
+
+        StartCoroutine(TurnFunc());
+    }
+
+    IEnumerator TurnFunc()
+    {
+        TurnTime = 30;
+        TurnTimeTxt.text = TurnTime.ToString();
+
+        if(IsPlayerTurn)
+        {
+            while (TurnTime-- > 0 )
+            {
+                TurnTimeTxt.text = TurnTime.ToString();
+                yield return new WaitForSeconds(1);
+            }
+        }
+        else
+        {
+            while (TurnTime-- > 27)
+            {
+                TurnTimeTxt.text = TurnTime.ToString();
+                yield return new WaitForSeconds(1);
+            }
+        }
+
+        ChangeTurn();
     }
 
     void GiveHandCards (List<Card> deck, Transform hand)
@@ -76,5 +112,16 @@ public class GameManagerSrp : MonoBehaviour
             cardObj.GetComponent<CardInfoSrp>().ShowCardInfo(card);
 
         deck.RemoveAt(0);
+    }
+
+    public void ChangeTurn()
+    {
+        StopAllCoroutines();
+
+        Turn++;
+
+        EndTurnBtn.interactable = IsPlayerTurn;
+
+        StartCoroutine(TurnFunc());       
     }
 }
