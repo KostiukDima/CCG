@@ -32,7 +32,6 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public void OnDrag(PointerEventData eventData)
     {
         Vector3 newPos = MainCamera.ScreenToWorldPoint(eventData.position);
-        newPos.z = 0;
         transform.position = newPos + offset;
 
         if (tempCard.transform.parent != defaultTempCardParrent)
