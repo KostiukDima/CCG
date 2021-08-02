@@ -8,18 +8,18 @@ public class CardInfoSrp : MonoBehaviour
     public Card SelfCard;
     public Image Logo;
     public Text Name;
+    public GameObject HideObj;
 
     public void HideCardInfo(Card card)
     {
         SelfCard = card;
-        //Logo.sprite = card.Logo;
-        Logo.preserveAspect = true;
-        Name.text = card.Name;
+        HideObj.SetActive(true);
     }
 
     public void ShowCardInfo(Card card)
     {
         SelfCard = card;
+        HideObj.SetActive(false);
         Logo.sprite = card.Logo;
         Logo.preserveAspect = true;
         Name.text = card.Name;
