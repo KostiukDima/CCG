@@ -9,6 +9,14 @@ public class CardInfoSrp : MonoBehaviour
     public Image Logo;
     public Text Name;
 
+    public void HideCardInfo(Card card)
+    {
+        SelfCard = card;
+        //Logo.sprite = card.Logo;
+        Logo.preserveAspect = true;
+        Name.text = card.Name;
+    }
+
     public void ShowCardInfo(Card card)
     {
         SelfCard = card;
@@ -19,6 +27,6 @@ public class CardInfoSrp : MonoBehaviour
 
     private void Start()
     {
-        ShowCardInfo(CardManager.AllCards[transform.GetSiblingIndex()]);
+       // ShowCardInfo(CardManager.AllCards[transform.GetSiblingIndex()]);
     }
 }
