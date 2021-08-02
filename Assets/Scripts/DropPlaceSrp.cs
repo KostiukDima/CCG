@@ -3,10 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public enum FieldType
+{
+    PlayerHandLine,
+    PlayerFirstGameLine,
+    PlayerSecondGameLine,
+    EnemySecondGameLine,
+    EnemyFirstGameLine,
+    EnemyHandLine,
+}
+
 public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler
 {
+    public FieldType Type;
     public void OnDrop(PointerEventData eventData)
     {
+        if (Type != FieldType.PlayerFirstGameLine &&
+            Type != FieldType.PlayerSecondGameLine)
+            return;
+
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();
 
         if(card)
@@ -16,7 +31,10 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (eventData.pointerDrag == null)
+        if (eventData.pointerDrag == null ||
+            Type == FieldType.EnemyHandLine ||
+            Type == FieldType.EnemyFirstGameLine ||
+            Type == FieldType.EnemySecondGameLine)
             return;
 
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();

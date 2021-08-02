@@ -9,6 +9,7 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     Vector3 offset;
     public Transform defaultParrent, defaultTempCardParrent;
     GameObject tempCard;
+    public bool IsDraggable;
 
     private void Awake()
     {
@@ -22,6 +23,11 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         defaultParrent = transform.parent;
         defaultTempCardParrent = transform.parent;
 
+        IsDraggable = defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerHandLine;
+
+        if (!IsDraggable)
+            return;
+
         tempCard.transform.SetParent(defaultParrent);       
         tempCard.transform.SetSiblingIndex(transform.GetSiblingIndex());       
 
@@ -31,6 +37,9 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (!IsDraggable)
+            return;
+
         Vector3 newPos = MainCamera.ScreenToWorldPoint(eventData.position);
         transform.position = newPos + offset;
 
@@ -42,6 +51,9 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (!IsDraggable)
+            return;
+
         transform.SetParent(defaultParrent);
         transform.SetSiblingIndex(tempCard.transform.GetSiblingIndex());
         GetComponent<CanvasGroup>().blocksRaycasts = true;
