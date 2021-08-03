@@ -7,21 +7,11 @@ public class Game
 {
     public List<Card> EnemyDeck;
     public List<Card> PlayerDeck;
-    public List<Card> EnemyHand;
-    public List<Card> PlayerHand;
-    public List<Card> EnemyField;
-    public List<Card> PlayerField;
 
     public Game()
     {
         EnemyDeck = GetDeckCard();
         PlayerDeck = GetDeckCard();
-
-        EnemyHand = new List<Card>();
-        PlayerHand = new List<Card>();
-        
-        EnemyField = new List<Card>();
-        PlayerField = new List<Card>();
     }
 
     List<Card> GetDeckCard()
@@ -41,11 +31,20 @@ public class GameManagerSrp : MonoBehaviour
 {
     public Game CurrentGame;
     public Transform EnemyHand;
-    public Transform PlayerHand;
+    public Transform PlayerHand; 
+    public Transform EnemyFirstField;
+    public Transform EnemySecondField;
+    public Transform PlayerSecondField;
+    public Transform PlayerFirstField;
     public GameObject cardPrefab;
     int Turn, TurnTime = 30;
     public Text TurnTimeTxt;
     public Button EndTurnBtn;
+
+    public List<CardInfoSrp> EnemyHandCards = new List<CardInfoSrp>(); 
+    public List<CardInfoSrp> PlayerHandCards = new List<CardInfoSrp>();
+    public List<CardInfoSrp> EnemyFieldCards = new List<CardInfoSrp>();
+    public List<CardInfoSrp> PlayerFieldCards = new List<CardInfoSrp>();
 
     public bool IsPlayerTurn
     {
@@ -84,9 +83,33 @@ public class GameManagerSrp : MonoBehaviour
                 TurnTimeTxt.text = TurnTime.ToString();
                 yield return new WaitForSeconds(1);
             }
+
+            if (EnemyHandCards.Count > 0)
+                EnemyTurn();
         }
 
         ChangeTurn();
+    }
+
+    void EnemyTurn()
+    {
+        int cardNumber = Random.Range(0, EnemyHandCards.Count);
+
+        EnemyHandCards[cardNumber].ShowCardInfo(EnemyHandCards[cardNumber].SelfCard);
+
+        int line = Random.Range(1, 3);
+
+        if(line == 1)
+        {
+            EnemyHandCards[cardNumber].transform.SetParent(EnemyFirstField);
+        }
+        else
+        {
+            EnemyHandCards[cardNumber].transform.SetParent(EnemySecondField);
+        }
+
+        EnemyFieldCards.Add(EnemyHandCards[cardNumber]);
+        EnemyHandCards.Remove(EnemyHandCards[cardNumber]);
     }
 
     void GiveHandCards (List<Card> deck, Transform hand)
@@ -107,10 +130,15 @@ public class GameManagerSrp : MonoBehaviour
         GameObject cardObj = Instantiate(cardPrefab, hand, false);
 
         if (hand == EnemyHand)
+        {
             cardObj.GetComponent<CardInfoSrp>().HideCardInfo(card);
+            EnemyHandCards.Add(cardObj.GetComponent<CardInfoSrp>());
+        }
         else
+        {
             cardObj.GetComponent<CardInfoSrp>().ShowCardInfo(card);
-
+            PlayerHandCards.Add(cardObj.GetComponent<CardInfoSrp>());
+        }
         deck.RemoveAt(0);
     }
 

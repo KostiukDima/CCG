@@ -24,9 +24,12 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();
 
-        if(card)
+        if (card)
+        {
+            card.GameManager.PlayerHandCards.Remove(card.GetComponent<CardInfoSrp>());
+            card.GameManager.PlayerFieldCards.Add(card.GetComponent<CardInfoSrp>());
             card.defaultParrent = transform;
-        
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)

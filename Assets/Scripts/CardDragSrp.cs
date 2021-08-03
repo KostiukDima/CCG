@@ -10,7 +10,7 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     public Transform defaultParrent, defaultTempCardParrent;
     GameObject tempCard;
     public bool IsDraggable;
-    GameManagerSrp GameManager;
+    public GameManagerSrp GameManager;
 
 
     private void Awake()
@@ -26,7 +26,9 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         defaultParrent = transform.parent;
         defaultTempCardParrent = transform.parent;
 
-        IsDraggable = defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerHandLine && GameManager.IsPlayerTurn;
+        IsDraggable = (defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerHandLine ||
+                      defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerFirstGameLine ||
+                      defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerSecondGameLine) && GameManager.IsPlayerTurn;
 
         if (!IsDraggable)
             return;
