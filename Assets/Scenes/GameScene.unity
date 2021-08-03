@@ -310,9 +310,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyHand: {fileID: 1242860224}
   PlayerHand: {fileID: 1220058464}
+  EnemyFirstField: {fileID: 614574732}
+  EnemySecondField: {fileID: 1884325632}
+  PlayerSecondField: {fileID: 764819760}
+  PlayerFirstField: {fileID: 1190826356}
   cardPrefab: {fileID: 7987979707095031481, guid: 8d2c1fc0f4a75064a8e7bb6dacbd9db2, type: 3}
   TurnTimeTxt: {fileID: 1585346482}
   EndTurnBtn: {fileID: 855284394}
+  EnemyHandCards: []
+  PlayerHandCards: []
+  EnemyFieldCards: []
+  PlayerFieldCards: []
 --- !u!1 &569193488
 GameObject:
   m_ObjectHideFlags: 0

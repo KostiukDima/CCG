@@ -37,7 +37,8 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
         if (eventData.pointerDrag == null ||
             Type == FieldType.EnemyHandLine ||
             Type == FieldType.EnemyFirstGameLine ||
-            Type == FieldType.EnemySecondGameLine)
+            Type == FieldType.EnemySecondGameLine ||
+            Type == FieldType.PlayerHandLine)
             return;
 
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();
