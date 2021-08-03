@@ -8,7 +8,11 @@ public class CardInfoSrp : MonoBehaviour
     public Card SelfCard;
     public Image Logo;
     public Text Name;
+    public Text Attack;
+    public Text Armor;
+    public Text Power;
     public GameObject HideObj;
+    public GameObject CanAttackObj;
 
     public void HideCardInfo(Card card)
     {
@@ -23,10 +27,28 @@ public class CardInfoSrp : MonoBehaviour
         Logo.sprite = card.Logo;
         Logo.preserveAspect = true;
         Name.text = card.Name;
+        Attack.text = card.Attack.ToString();
+        Armor.text = card.Armor.ToString();
+        Power.text = card.Power.ToString();
     }
 
     private void Start()
     {
-       // ShowCardInfo(CardManager.AllCards[transform.GetSiblingIndex()]);
+       
+    }
+
+    public void ShowCanAttack()
+    {
+        CanAttackObj.SetActive(true);
+    }
+    public void HideCanAttack()
+    {
+        CanAttackObj.SetActive(false);
+    }
+
+    public void RefresData()
+    {
+        Armor.text = SelfCard.Armor.ToString();
+        Power.text = SelfCard.Power.ToString();
     }
 }

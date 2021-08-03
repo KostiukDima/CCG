@@ -68,8 +68,22 @@ public class GameManagerSrp : MonoBehaviour
         TurnTime = 30;
         TurnTimeTxt.text = TurnTime.ToString();
 
-        if(IsPlayerTurn)
+        foreach (var item in PlayerFieldCards)
+        {            
+            item.HideCanAttack();
+        }
+
+        if (IsPlayerTurn)
         {
+            foreach (var item in PlayerFieldCards)
+            {
+                item.SelfCard.ChangeAttackState(false);
+                if(item.SelfCard.CanAttack)
+                {
+                    item.ShowCanAttack();
+                }
+            }
+
             while (TurnTime-- > 0 )
             {
                 TurnTimeTxt.text = TurnTime.ToString();
@@ -78,6 +92,11 @@ public class GameManagerSrp : MonoBehaviour
         }
         else
         {
+            foreach (var item in EnemyFieldCards)
+            {
+                item.SelfCard.ChangeAttackState(false);
+            }
+
             while (TurnTime-- > 27)
             {
                 TurnTimeTxt.text = TurnTime.ToString();
@@ -110,6 +129,17 @@ public class GameManagerSrp : MonoBehaviour
 
         EnemyFieldCards.Add(EnemyHandCards[cardNumber]);
         EnemyHandCards.Remove(EnemyHandCards[cardNumber]);
+
+        foreach (var attackingCard in EnemyFieldCards.FindAll(c => c.SelfCard.CanAttack))
+        {
+            if (PlayerFieldCards.Count == 0)
+                return;
+
+            CardInfoSrp enemyCard = PlayerFieldCards[Random.Range(0, PlayerFieldCards.Count)];
+
+            attackingCard.SelfCard.ChangeAttackState(true);
+            CardsFight(attackingCard, enemyCard);
+        }
     }
 
     void GiveHandCards (List<Card> deck, Transform hand)
@@ -138,6 +168,7 @@ public class GameManagerSrp : MonoBehaviour
         {
             cardObj.GetComponent<CardInfoSrp>().ShowCardInfo(card);
             PlayerHandCards.Add(cardObj.GetComponent<CardInfoSrp>());
+            cardObj.GetComponent<AttackedCardSrp>().enabled = false;
         }
         deck.RemoveAt(0);
     }
@@ -151,5 +182,32 @@ public class GameManagerSrp : MonoBehaviour
         EndTurnBtn.interactable = IsPlayerTurn;
 
         StartCoroutine(TurnFunc());       
+    }
+
+    public void CardsFight(CardInfoSrp attackingCard, CardInfoSrp attackedCard)
+    {
+        attackedCard.SelfCard.ChangePower(attackingCard.SelfCard.Attack);
+    
+        if(!attackedCard.SelfCard.IsAlive)
+            DestroyCard(attackedCard);
+        else
+            attackedCard.RefresData();
+    }
+
+    public void DestroyCard(CardInfoSrp card)
+    {
+        card.GetComponent<CardDragSrp>().OnEndDrag(null);
+
+        if(EnemyFieldCards.Exists(c => c == card))
+        {
+            EnemyFieldCards.Remove(card);
+        }
+
+        if (PlayerFieldCards.Exists(c => c == card))
+        {
+            PlayerFieldCards.Remove(card);
+        }
+
+        Destroy(card.gameObject);   
     }
 }

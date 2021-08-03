@@ -24,7 +24,11 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();
 
-        if (card)
+        if (card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerFirstGameLine ||
+            card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerSecondGameLine)
+            return;
+
+        if (card && card.GameManager.IsPlayerTurn)
         {
             card.GameManager.PlayerHandCards.Remove(card.GetComponent<CardInfoSrp>());
             card.GameManager.PlayerFieldCards.Add(card.GetComponent<CardInfoSrp>());
@@ -42,6 +46,11 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
             return;
 
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();
+
+        if (card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerFirstGameLine ||
+            card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerSecondGameLine)
+            return;
+        
 
         if (card)
             card.defaultTempCardParrent = transform;
