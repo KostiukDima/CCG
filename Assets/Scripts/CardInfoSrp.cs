@@ -46,7 +46,7 @@ public class CardInfoSrp : MonoBehaviour
         CanAttackObj.SetActive(false);
     }
 
-    public void RefresData()
+    public void RefreshData()
     {
         Armor.text = SelfCard.Armor.ToString();
         Power.text = SelfCard.Power.ToString();

@@ -47,13 +47,14 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
 
         CardDragSrp card = eventData.pointerDrag.GetComponent<CardDragSrp>();
 
-        if (card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerFirstGameLine ||
-            card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerSecondGameLine)
-            return;
-        
-
         if (card)
+        {
+            if (card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerFirstGameLine ||
+              card.defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerSecondGameLine)
+                return;
+
             card.defaultTempCardParrent = transform;
+        }
         
     }
 

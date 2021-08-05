@@ -69,6 +69,8 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         GetComponent<CanvasGroup>().blocksRaycasts = true;
         tempCard.transform.SetParent(GameObject.Find("Lines").transform);
         tempCard.transform.localPosition = new Vector3(2000, 0, 0);
+
+        GameManager.RefreshGameScore();
     }
 
     void CheckPositions()
