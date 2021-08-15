@@ -115,8 +115,6 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
     IEnumerator MoveToTargetCor(Transform target)
     {
-        Debug.Log("dfdfdfdf");
-
         Vector3 pos = transform.position;
         Transform parent = transform.parent;
         int index = transform.GetSiblingIndex();

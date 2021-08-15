@@ -18,7 +18,7 @@ public class Game
     {
         List<Card> cards = new List<Card>();
 
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < 20; i++)
         {
             cards.Add(CardManager.AllCards[Random.Range(0, CardManager.AllCards.Count)]);
         }
@@ -72,10 +72,17 @@ public class GameManagerSrp : MonoBehaviour
 
     public bool PlayerPassed;
     public bool EnemyPassed;
+    public bool CheckResult;
     public GameObject EnemyPassedObj;
     public GameObject PlayerPassedObj;
 
-    int numberRound;
+    public GameObject EndRoundObj;
+    public GameObject EndMatchObj;
+
+    public int numberRound;
+
+    public bool PlayerAttackedCard;
+    public bool PlayerMovedCardToField;
 
     public bool IsPlayerTurn
     {
@@ -101,6 +108,9 @@ public class GameManagerSrp : MonoBehaviour
         {
             if (!PlayerPassed)
             {
+                PlayerAttackedCard = false;
+                PlayerMovedCardToField = false;
+
                 foreach (var item in PlayerFieldCards)
                 {
                     item.SelfCard.ChangeAttackState(false);
@@ -127,7 +137,11 @@ public class GameManagerSrp : MonoBehaviour
             }
                         
             StartCoroutine(EnemyTurn());
-        }      
+        }
+        else 
+        {
+            ChangeTurn();
+        }
     }
 
     IEnumerator EnemyTurn()
@@ -188,22 +202,44 @@ public class GameManagerSrp : MonoBehaviour
             EnemyPassed = true;
             EnemyPassedObj.SetActive(true);
         }
-        CheckForResult();
+        
         ChangeTurn();
     }
 
     void GiveHandCards(List<Card> deck, Transform hand)
     {
-        for (int i = 0; i < 5; i++)
+        if (numberRound == 0)
         {
-            GiveCardToHand(deck, hand);
+            for (int i = 0; i < 10; i++)
+            {
+                GiveCardToHand(deck, hand);
+            }
         }
+        else
+        {
+            for (int i = 0; i < 4; i++)
+            {                
+                GiveCardToHand(deck, hand);
+            }
+        }
+
     }
 
     void GiveCardToHand(List<Card> deck, Transform hand)
     {
         if (deck.Count == 0)
             return;
+
+        if (hand == EnemyHand)
+        {
+            if (EnemyHandCards.Count >= 10)
+                return;
+        }
+        else if (hand == PlayerHand)
+        {
+            if (PlayerHandCards.Count >= 10)
+                return;
+        }
 
         Card card = deck[0];
 
@@ -239,6 +275,11 @@ public class GameManagerSrp : MonoBehaviour
     {
         StopAllCoroutines();
 
+        if (PlayerPassed && EnemyPassed)
+        {
+            CheckForResult();
+            return;
+        }
         Turn++;
 
         EndTurnBtn.interactable = IsPlayerTurn && !PlayerPassed;
@@ -301,8 +342,10 @@ public class GameManagerSrp : MonoBehaviour
 
     public void CheckForResult()
     {
-        if (PlayerPassed && EnemyPassed)
+        if (PlayerPassed && EnemyPassed && !CheckResult)
         {
+            CheckResult = true;
+
             StopAllCoroutines();
 
             RefreshRoundResult();
@@ -314,8 +357,8 @@ public class GameManagerSrp : MonoBehaviour
             else if (MatchScore.GameScores.Count == 2)
             {
                 if (MatchScore.EnemyScore == MatchScore.PlayerScore)
-                { 
-                    StartNewRound();
+                {
+                    OpenEndRoundWindow();
                 }
                 else
                 {
@@ -324,7 +367,7 @@ public class GameManagerSrp : MonoBehaviour
             }
             else
             {
-                StartNewRound();
+                OpenEndRoundWindow();
             }
         }
     }
@@ -332,12 +375,14 @@ public class GameManagerSrp : MonoBehaviour
     public void StartNewRound()
     {
         Turn = 0;
+        CheckResult = false;
         numberRound++;
         MatchScore.GameScores.Add(new GameScore());
         ClearFieldInfo();
 
         EndTurnBtn.interactable = true;
 
+        EndRoundObj.SetActive(false);
         EnemyPassedObj.SetActive(false);
         PlayerPassedObj.SetActive(false);
 
@@ -347,17 +392,20 @@ public class GameManagerSrp : MonoBehaviour
         GiveHandCards(CurrentGame.PlayerDeck, PlayerHand);
         GiveHandCards(CurrentGame.EnemyDeck, EnemyHand);
 
+        StopAllCoroutines();
         StartCoroutine(TurnFunc());
     }
 
     public void EndGame()
     {
         ClearFieldInfo();
+        EndMatchObj.GetComponent<EndMatchWindowSpr>().OpenWindow(MatchScore);
     }
 
     public void StartGame()
     {
         Turn = 0;
+        CheckResult = false;
         numberRound = 0;
         CurrentGame = new Game();
 
@@ -418,5 +466,10 @@ public class GameManagerSrp : MonoBehaviour
         {
             item.HighlightAsTarget(highlight);
         }
+    }
+
+    public void OpenEndRoundWindow() 
+    {
+        EndRoundObj.GetComponent<EndRoundWindowSrp>().OpenWindow(MatchScore);
     }
 }
