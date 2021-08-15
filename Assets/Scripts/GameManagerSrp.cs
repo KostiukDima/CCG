@@ -116,6 +116,8 @@ public class GameManagerSrp : MonoBehaviour
                     yield return new WaitForSeconds(1);
                 }
             }
+
+            ChangeTurn();
         }
         else if(!EnemyPassed)
         {
@@ -123,29 +125,15 @@ public class GameManagerSrp : MonoBehaviour
             {
                 item.SelfCard.ChangeAttackState(false);
             }
-
-            while (TurnTime-- > 27)
-            {
-                TurnTimeTxt.text = TurnTime.ToString();
-                yield return new WaitForSeconds(1);
-            }
-
-            EnemyTurn();
-
-            if(EnemyHandCards.Count == 0)
-            {
-                EnemyPassed = true;
-                EnemyPassedObj.SetActive(true);
-            }
-
-            CheckForResult();
-        }
-
-        ChangeTurn();
+                        
+            StartCoroutine(EnemyTurn());
+        }      
     }
 
-    void EnemyTurn()
+    IEnumerator EnemyTurn()
     {
+        yield return new WaitForSeconds(1);
+
         if (EnemyHandCards.Count > 0)
         {
             int cardNumber = Random.Range(0, EnemyHandCards.Count);
@@ -156,28 +144,52 @@ public class GameManagerSrp : MonoBehaviour
 
             if (line == 1)
             {
+                EnemyHandCards[cardNumber].GetComponent<CardDragSrp>().MoveToField(EnemyFirstField);
+                yield return new WaitForSeconds(0.51f);
                 EnemyHandCards[cardNumber].transform.SetParent(EnemyFirstField);
             }
             else
             {
+                EnemyHandCards[cardNumber].GetComponent<CardDragSrp>().MoveToField(EnemySecondField);
+                yield return new WaitForSeconds(0.51f);
                 EnemyHandCards[cardNumber].transform.SetParent(EnemySecondField);
             }
 
             EnemyFieldCards.Add(EnemyHandCards[cardNumber]);
             EnemyHandCards.Remove(EnemyHandCards[cardNumber]);
         }
+        RefreshGameScore();
+        yield return new WaitForSeconds(1);
+
+
         foreach (var attackingCard in EnemyFieldCards.FindAll(c => c.SelfCard.CanAttack))
         {
             if (PlayerFieldCards.Count == 0)
-                return;
+            {
+                break;
+            }
 
             CardInfoSrp enemyCard = PlayerFieldCards[Random.Range(0, PlayerFieldCards.Count)];
 
+            attackingCard.GetComponent<CardDragSrp>().MoveToTarget(enemyCard.transform);
+            yield return new WaitForSeconds(0.75f);
+
             attackingCard.SelfCard.ChangeAttackState(true);
             CardsFight(attackingCard, enemyCard);
+
+            RefreshGameScore();
+            yield return new WaitForSeconds(0.2f);
         }
 
-        RefreshGameScore();
+        yield return new WaitForSeconds(1);        
+
+        if(EnemyHandCards.Count == 0)
+        {
+            EnemyPassed = true;
+            EnemyPassedObj.SetActive(true);
+        }
+        CheckForResult();
+        ChangeTurn();
     }
 
     void GiveHandCards(List<Card> deck, Transform hand)
@@ -397,6 +409,14 @@ public class GameManagerSrp : MonoBehaviour
             EnemyMatchScoreTxt.text = MatchScore.EnemyScore.ToString();
             MatchScore.PlayerScore++;
             PlayerMatchScoreTxt.text = MatchScore.PlayerScore.ToString();
+        }
+    }
+
+    public void HighlighTargets(bool highlight)
+    {
+        foreach (var item in EnemyFieldCards)
+        {
+            item.HighlightAsTarget(highlight);
         }
     }
 }

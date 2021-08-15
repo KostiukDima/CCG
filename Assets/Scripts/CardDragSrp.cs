@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -37,11 +39,16 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (!IsDraggable)
             return;
 
+        if(GetComponent<CardInfoSrp>().SelfCard.CanAttack)
+        GameManager.HighlighTargets(true);
+
         tempCard.transform.SetParent(defaultParrent);       
         tempCard.transform.SetSiblingIndex(transform.GetSiblingIndex());       
 
         transform.SetParent(defaultParrent.parent);
         GetComponent<CanvasGroup>().blocksRaycasts = false;
+
+
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -63,6 +70,8 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         if (!IsDraggable)
             return;
+
+        GameManager.HighlighTargets(false);
 
         transform.SetParent(defaultParrent);
         transform.SetSiblingIndex(tempCard.transform.GetSiblingIndex());
@@ -91,5 +100,43 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         }
 
         tempCard.transform.SetSiblingIndex(newIndex);
+    }
+
+    public void MoveToField(Transform field)
+    {
+        transform.SetParent(GameObject.Find("Lines").transform);
+        transform.DOMove(field.position, 0.5f);
+    }
+
+    public void MoveToTarget(Transform target)
+    {
+        StartCoroutine(MoveToTargetCor(target));
+    }
+
+    IEnumerator MoveToTargetCor(Transform target)
+    {
+        Debug.Log("dfdfdfdf");
+
+        Vector3 pos = transform.position;
+        Transform parent = transform.parent;
+        int index = transform.GetSiblingIndex();
+
+        transform.parent.GetComponent<HorizontalLayoutGroup>().enabled = false;
+
+        transform.SetParent(GameObject.Find("Lines").transform);
+
+        transform.DOMove(target.position, 0.25f);
+
+        yield return new WaitForSeconds(0.25f);
+
+        transform.DOMove(pos, 0.25f);
+
+        yield return new WaitForSeconds(0.25f);
+
+        transform.SetParent(parent);
+        transform.SetSiblingIndex(index);
+
+        transform.parent.GetComponent<HorizontalLayoutGroup>().enabled = true;
+
     }
 }

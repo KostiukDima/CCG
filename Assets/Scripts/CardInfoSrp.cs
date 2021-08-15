@@ -13,6 +13,7 @@ public class CardInfoSrp : MonoBehaviour
     public Text Power;
     public GameObject HideObj;
     public GameObject CanAttackObj;
+    public GameObject AttackTargetObj;
 
     public void HideCardInfo(Card card)
     {
@@ -50,5 +51,10 @@ public class CardInfoSrp : MonoBehaviour
     {
         Armor.text = SelfCard.Armor.ToString();
         Power.text = SelfCard.Power.ToString();
+    }
+
+    public void HighlightAsTarget (bool highlight)
+    {
+        AttackTargetObj.SetActive(highlight);
     }
 }
