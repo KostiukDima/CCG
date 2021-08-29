@@ -40,7 +40,7 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             return;
 
         if(GetComponent<CardInfoSrp>().SelfCard.CanAttack)
-        GameManager.HighlighTargets(true);
+        GameManager.HighlighTargets(true, GetComponent<CardInfoSrp>());
 
         tempCard.transform.SetParent(defaultParrent);       
         tempCard.transform.SetSiblingIndex(transform.GetSiblingIndex());       

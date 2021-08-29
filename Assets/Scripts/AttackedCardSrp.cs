@@ -12,6 +12,9 @@ public class AttackedCardSrp : MonoBehaviour, IDropHandler
 
         CardInfoSrp card = eventData.pointerDrag.GetComponent<CardInfoSrp>();
         
+        if (!GetComponent<CardDragSrp>().GameManager.CanAttackCard(card, GetComponent<CardInfoSrp>()))
+            return;
+                
         if(card && card.SelfCard.CanAttack && 
             transform.parent == GetComponent<CardDragSrp>().GameManager.EnemyFirstField ||
             transform.parent == GetComponent<CardDragSrp>().GameManager.EnemySecondField)

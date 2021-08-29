@@ -44,7 +44,8 @@ public class CardInfoSrp : MonoBehaviour
     }
     public void HideCanAttack()
     {
-        CanAttackObj.SetActive(false);
+        if(CanAttackObj)
+            CanAttackObj.SetActive(false);
     }
 
     public void RefreshData()

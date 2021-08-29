@@ -127,6 +127,8 @@ public class GameManagerSrp : MonoBehaviour
                 }
             }
 
+            PlayerPassed = true;
+            PlayerPassedObj.SetActive(true);
             ChangeTurn();
         }
         else if(!EnemyPassed)
@@ -183,7 +185,10 @@ public class GameManagerSrp : MonoBehaviour
                 break;
             }
 
-            CardInfoSrp enemyCard = PlayerFieldCards[Random.Range(0, PlayerFieldCards.Count)];
+            CardInfoSrp enemyCard = GetAttackedCard(attackingCard);
+
+            if (!enemyCard)
+                continue;
 
             attackingCard.GetComponent<CardDragSrp>().MoveToTarget(enemyCard.transform);
             yield return new WaitForSeconds(0.75f);
@@ -204,6 +209,17 @@ public class GameManagerSrp : MonoBehaviour
         }
         
         ChangeTurn();
+    }
+
+    CardInfoSrp GetAttackedCard(CardInfoSrp attackingCard)
+    {
+        foreach (var item in PlayerFieldCards)
+        {
+            if (CanAttackCard(attackingCard, item))
+                return item;
+        }
+
+        return null;
     }
 
     void GiveHandCards(List<Card> deck, Transform hand)
@@ -289,6 +305,9 @@ public class GameManagerSrp : MonoBehaviour
 
     public void CardsFight(CardInfoSrp attackingCard, CardInfoSrp attackedCard)
     {
+        if (!CanAttackCard(attackingCard, attackedCard))
+            return;
+
         attackedCard.SelfCard.ChangePower(attackingCard.SelfCard.Attack);
 
         if (!attackedCard.SelfCard.IsAlive)
@@ -460,6 +479,15 @@ public class GameManagerSrp : MonoBehaviour
         }
     }
 
+    public void HighlighTargets(bool highlight, CardInfoSrp attackingCard)
+    {
+        foreach (var item in EnemyFieldCards)
+        {
+            if(CanAttackCard(attackingCard, item))
+                item.HighlightAsTarget(highlight);
+        }
+    }
+
     public void HighlighTargets(bool highlight)
     {
         foreach (var item in EnemyFieldCards)
@@ -471,5 +499,49 @@ public class GameManagerSrp : MonoBehaviour
     public void OpenEndRoundWindow() 
     {
         EndRoundObj.GetComponent<EndRoundWindowSrp>().OpenWindow(MatchScore);
+    }
+
+    public bool CanAttackCard(CardInfoSrp attackingCard, CardInfoSrp attackedCard )
+    {
+        if(attackingCard.SelfCard.Type == Card.CardType.Infantry)
+        {
+            if (attackedCard.SelfCard.Type == Card.CardType.Fortification)
+            {
+                return false;
+            }
+        }
+        if (attackingCard.SelfCard.Type == Card.CardType.Cavalry)
+        {
+            if (attackedCard.SelfCard.Type == Card.CardType.Fortification)
+            {
+                return false;
+            }
+        }
+
+        int siblingIndex = attackedCard.gameObject.transform.GetSiblingIndex();
+
+        var nextCard = siblingIndex + 1 < attackedCard.gameObject.transform.parent.transform.childCount ? 
+            attackedCard.gameObject.transform.parent.transform.GetChild(siblingIndex + 1) : null;
+        var prewCard = siblingIndex > 0 ? attackedCard.gameObject.transform.parent.transform.GetChild(siblingIndex - 1) : null;
+
+        if(prewCard)
+        {
+            var infoSrp = prewCard.GetComponent<CardInfoSrp>();
+            
+            if(infoSrp)
+                if (infoSrp.SelfCard.Type == Card.CardType.Fortification)            
+                    return false;
+        }
+        if (nextCard)
+        {
+            var infoSrp = nextCard.GetComponent<CardInfoSrp>();
+
+            if (infoSrp)
+                if (infoSrp.SelfCard.Type == Card.CardType.Fortification)
+                    return false;
+        }
+
+
+        return true;
     }
 }

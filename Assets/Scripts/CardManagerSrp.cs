@@ -4,6 +4,14 @@ using UnityEngine;
 
 public struct Card
 {
+    public enum CardType
+    {
+        Infantry,
+        Cavalry,
+        Artillery,
+        Fortification
+    }
+
     public string Name;
     public Sprite Logo;
     public int Attack;
@@ -12,13 +20,14 @@ public struct Card
     public int TurnToAttack;
     public int TurnPassed;
     public bool CanAttack;
+    public CardType Type;
 
     public bool IsAlive
     {
         get { return Power > 0; }
     }
 
-    public Card(string name, string logoPath, int attack, int armor, int power, int turnToAttack)
+    public Card(string name, string logoPath, int attack, int armor, int power, int turnToAttack, CardType type)
     {
         Name = name;
         Logo = Resources.Load<Sprite>(logoPath);
@@ -28,6 +37,7 @@ public struct Card
         TurnToAttack = turnToAttack;
         TurnPassed = 0;
         CanAttack = false;
+        Type = type;
     }
 
     public void ChangeAttackState(bool isAttack)
@@ -37,7 +47,7 @@ public struct Card
             CanAttack = false;
             TurnPassed = 0;
         }
-        else
+        else if (Attack > 0)
         {
             TurnPassed++;
 
@@ -75,10 +85,10 @@ public class CardManagerSrp : MonoBehaviour
 {
     public void Awake()
     {
-        CardManager.AllCards.Add(new Card("Carabiniers", "Sprites/Cards/Carabiniers", 2, 3, 5, 1));
-        CardManager.AllCards.Add(new Card("Cavalry", "Sprites/Cards/Cavalry", 6, 7, 9, 0));
-        CardManager.AllCards.Add(new Card("Cuirassiers", "Sprites/Cards/Cuirassiers", 5, 1, 8, 2));
-        CardManager.AllCards.Add(new Card("Lancers", "Sprites/Cards/Lancers", 3, 4, 7, 1));
+        CardManager.AllCards.Add(new Card("Infantry", "Sprites/Cards/PolPih", 2, 3, 5, 1, Card.CardType.Infantry));
+        CardManager.AllCards.Add(new Card("Cavalry", "Sprites/Cards/Cavalry", 6, 7, 9, 0, Card.CardType.Cavalry));
+        CardManager.AllCards.Add(new Card("Artillery", "Sprites/Cards/Artil", 5, 1, 8, 2, Card.CardType.Artillery));
+        CardManager.AllCards.Add(new Card("Hotyn", "Sprites/Cards/Hotyn", 0, 0, 10, 0, Card.CardType.Fortification));
     }
 
 }
