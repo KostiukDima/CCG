@@ -29,7 +29,11 @@ public class CardInfoSrp : MonoBehaviour
         Logo.preserveAspect = true;
         Name.text = card.Name;
         Attack.text = card.Attack.ToString();
+        if (card.Attack == 0)
+            Attack.gameObject.SetActive(false);
         Armor.text = card.Armor.ToString();
+        if (card.Armor == 0)
+            Armor.gameObject.SetActive(false);
         Power.text = card.Power.ToString();
     }
 
@@ -51,6 +55,8 @@ public class CardInfoSrp : MonoBehaviour
     public void RefreshData()
     {
         Armor.text = SelfCard.Armor.ToString();
+        if (SelfCard.Armor == 0)
+            Armor.gameObject.SetActive(false);
         Power.text = SelfCard.Power.ToString();
     }
 

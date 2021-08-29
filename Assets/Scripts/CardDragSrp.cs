@@ -28,7 +28,7 @@ public class CardDragSrp : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         defaultParrent = transform.parent;
         defaultTempCardParrent = transform.parent;
 
-        IsDraggable = defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerHandLine && GameManager.IsPlayerTurn;
+        IsDraggable = defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerHandLine && GameManager.IsPlayerTurn && !GameManager.PlayerMovedCardToField;
 
         if((defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerFirstGameLine ||
            defaultParrent.GetComponent<DropPlaceSrp>().Type == FieldType.PlayerSecondGameLine) && GameManager.IsPlayerTurn)
