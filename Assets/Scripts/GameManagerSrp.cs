@@ -202,7 +202,7 @@ public class GameManagerSrp : MonoBehaviour
 
         yield return new WaitForSeconds(1);        
 
-        if(EnemyHandCards.Count == 0)
+        if(EnemyHandCards.Count == 0 || (MatchScore.GameScores[numberRound].EnemyPower > MatchScore.GameScores[numberRound].PlayerPower && PlayerPassed))            
         {
             EnemyPassed = true;
             EnemyPassedObj.SetActive(true);
@@ -437,6 +437,33 @@ public class GameManagerSrp : MonoBehaviour
         StartCoroutine(TurnFunc());
     }
 
+    public void RestartGame()
+    {
+        Turn = 0;
+        CheckResult = false;
+        numberRound = 0;
+        CurrentGame = new Game();
+        ClearFieldInfo();
+
+        MatchScore = new MatchScore();
+        MatchScore.GameScores.Add(new GameScore());
+
+        EndTurnBtn.interactable = true;
+
+        EndRoundObj.SetActive(false);
+        EnemyPassedObj.SetActive(false);
+        PlayerPassedObj.SetActive(false);
+        EndMatchObj.SetActive(false);
+
+        PlayerPassed = false;
+        EnemyPassed = false;
+        GiveHandCards(CurrentGame.PlayerDeck, PlayerHand);
+        GiveHandCards(CurrentGame.EnemyDeck, EnemyHand);
+
+        StopAllCoroutines();
+        StartCoroutine(TurnFunc());        
+    }
+
     public void ClearFieldInfo()
     {
         StopAllCoroutines();
@@ -457,6 +484,8 @@ public class GameManagerSrp : MonoBehaviour
 
         EnemyPowerScoreTxt.text = "0";
         PlayerPowerScoreTxt.text = "0";
+        EnemyMatchScoreTxt.text = "0";
+        PlayerMatchScoreTxt.text = "0";
     }
     public void RefreshRoundResult()
     {

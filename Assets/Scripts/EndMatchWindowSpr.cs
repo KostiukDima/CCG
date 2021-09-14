@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class EndMatchWindowSpr : MonoBehaviour
 {
@@ -37,7 +38,7 @@ public class EndMatchWindowSpr : MonoBehaviour
         EndMatchPlayerMatchScoreTxt.text = score.PlayerScore.ToString();
         EndMatchEnemyMatchScoreTxt.text = score.EnemyScore.ToString();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i <=GameManager.numberRound; i++)
         {
             if(i == 0)
             {
@@ -69,5 +70,15 @@ public class EndMatchWindowSpr : MonoBehaviour
         {
             EndMatchTxt.text = "Нічия";
         }
+    }
+
+    public void ExitPressed()
+    {
+        SceneManager.LoadScene("MenuScene");
+    }
+
+    public void RestartPressed()
+    {
+        GameManager.RestartGame();
     }
 }
