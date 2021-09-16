@@ -84,6 +84,8 @@ public class GameManagerSrp : MonoBehaviour
     public bool PlayerAttackedCard;
     public bool PlayerMovedCardToField;
 
+    public Text ButtonEndTurnTxt;
+
     public bool IsPlayerTurn
     {
         get { return Turn % 2 == 0; }
@@ -110,6 +112,7 @@ public class GameManagerSrp : MonoBehaviour
             {
                 PlayerAttackedCard = false;
                 PlayerMovedCardToField = false;
+                ButtonEndTurnTxt.text = "Пас";
 
                 foreach (var item in PlayerFieldCards)
                 {
@@ -277,11 +280,14 @@ public class GameManagerSrp : MonoBehaviour
 
     public void EndTurn()
     {
-        if(PlayerHandCards.Count == 0)
+        if(PlayerHandCards.Count == 0 || (!PlayerAttackedCard && !PlayerMovedCardToField))
         {
             PlayerPassed = true;
             PlayerPassedObj.SetActive(true);
         }
+
+        if (PlayerAttackedCard && !PlayerMovedCardToField)
+            return;
 
         ChangeTurn();
     }
@@ -308,6 +314,11 @@ public class GameManagerSrp : MonoBehaviour
         if (!CanAttackCard(attackingCard, attackedCard))
             return;
 
+        if (IsPlayerTurn)
+        {
+            ButtonEndTurnTxt.text = "Завершити хід";
+            PlayerAttackedCard = true;
+        }
         attackedCard.SelfCard.ChangePower(attackingCard.SelfCard.Attack);
 
         if (!attackedCard.SelfCard.IsAlive)
@@ -397,7 +408,7 @@ public class GameManagerSrp : MonoBehaviour
         CheckResult = false;
         numberRound++;
         MatchScore.GameScores.Add(new GameScore());
-        ClearFieldInfo();
+        ClearFieldInfoWithoutHandCard();
 
         EndTurnBtn.interactable = true;
 
@@ -487,6 +498,23 @@ public class GameManagerSrp : MonoBehaviour
         EnemyMatchScoreTxt.text = "0";
         PlayerMatchScoreTxt.text = "0";
     }
+
+    public void ClearFieldInfoWithoutHandCard()
+    {
+        StopAllCoroutines();
+                
+        foreach (var item in PlayerFieldCards)
+            Destroy(item.gameObject);
+        foreach (var item in EnemyFieldCards)
+            Destroy(item.gameObject);
+
+        PlayerFieldCards.Clear();
+        EnemyFieldCards.Clear();
+
+        EnemyPowerScoreTxt.text = "0";
+        PlayerPowerScoreTxt.text = "0";
+    }
+
     public void RefreshRoundResult()
     {
         if(MatchScore.GameScores[numberRound].EnemyPower > MatchScore.GameScores[numberRound].PlayerPower)

@@ -36,6 +36,7 @@ public class DropPlaceSrp : MonoBehaviour, IDropHandler, IPointerEnterHandler, I
             card.GameManager.PlayerHandCards.Remove(card.GetComponent<CardInfoSrp>());
             card.GameManager.PlayerFieldCards.Add(card.GetComponent<CardInfoSrp>());
             card.GameManager.PlayerMovedCardToField = true;
+            card.GameManager.ButtonEndTurnTxt.text = "Завершити хід";
             card.defaultParrent = transform;
         }
     }
