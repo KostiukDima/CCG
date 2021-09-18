@@ -85,10 +85,24 @@ public class CardManagerSrp : MonoBehaviour
 {
     public void Awake()
     {
-        CardManager.AllCards.Add(new Card("Infantry", "Sprites/Cards/PolPih", 2, 3, 5, 1, Card.CardType.Infantry));
-        CardManager.AllCards.Add(new Card("Cavalry", "Sprites/Cards/Cavalry", 6, 7, 9, 0, Card.CardType.Cavalry));
-        CardManager.AllCards.Add(new Card("Artillery", "Sprites/Cards/Artil", 5, 1, 8, 2, Card.CardType.Artillery));
-        CardManager.AllCards.Add(new Card("Hotyn", "Sprites/Cards/Hotyn", 0, 0, 10, 0, Card.CardType.Fortification));
+        CardManager.AllCards.Add(new Card("Мушкетери", "Sprites/Cards/Musketeer", 2, 3, 5, 1, Card.CardType.Infantry));
+        CardManager.AllCards.Add(new Card("Єгері", "Sprites/Cards/Jager", 2, 3, 5, 1, Card.CardType.Infantry));
+        CardManager.AllCards.Add(new Card("Гренадери", "Sprites/Cards/Grenadier", 2, 3, 5, 1, Card.CardType.Infantry));
+        CardManager.AllCards.Add(new Card("Аркебузири", "Sprites/Cards/Arquebus", 2, 3, 5, 1, Card.CardType.Infantry));
+        CardManager.AllCards.Add(new Card("Кірасири", "Sprites/Cards/Cuirassiers", 6, 7, 9, 0, Card.CardType.Cavalry));
+        CardManager.AllCards.Add(new Card("Драгуни", "Sprites/Cards/Dragons", 6, 7, 9, 0, Card.CardType.Cavalry));
+        CardManager.AllCards.Add(new Card("Карабінери", "Sprites/Cards/Carabiniers", 6, 7, 9, 0, Card.CardType.Cavalry));
+        CardManager.AllCards.Add(new Card("Кавалеристи", "Sprites/Cards/Cavalry", 6, 7, 9, 0, Card.CardType.Cavalry));
+        CardManager.AllCards.Add(new Card("Бомбарда", "Sprites/Cards/Bombarda", 5, 1, 8, 2, Card.CardType.Artillery));
+        CardManager.AllCards.Add(new Card("Канона", "Sprites/Cards/Canona", 5, 1, 8, 2, Card.CardType.Artillery));
+        CardManager.AllCards.Add(new Card("Гаубиця", "Sprites/Cards/Artil", 5, 1, 8, 2, Card.CardType.Artillery));
+        CardManager.AllCards.Add(new Card("Мортира", "Sprites/Cards/Mortira", 5, 1, 8, 2, Card.CardType.Artillery));
+        CardManager.AllCards.Add(new Card("Ліхтенштайн", "Sprites/Cards/Lichtenstein", 0, 0, 10, 0, Card.CardType.Fortification));
+        CardManager.AllCards.Add(new Card("Марксбург", "Sprites/Cards/Marksburg", 0, 0, 10, 0, Card.CardType.Fortification));
+        CardManager.AllCards.Add(new Card("Фалькенберг", "Sprites/Cards/Falkenberg", 0, 0, 10, 0, Card.CardType.Fortification));
+        CardManager.AllCards.Add(new Card("Шлайнінґ", "Sprites/Cards/Karlstein", 0, 0, 10, 0, Card.CardType.Fortification));
+        CardManager.AllCards.Add(new Card("Шильон", "Sprites/Cards/Schlaining", 0, 0, 10, 0, Card.CardType.Fortification));
+        CardManager.AllCards.Add(new Card("Карлштейн", "Sprites/Cards/Chillon", 0, 0, 10, 0, Card.CardType.Fortification));
     }
 
 }
